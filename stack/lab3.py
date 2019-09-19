@@ -6,10 +6,14 @@ class Stack:
         self.stack.append(elem)
 
     def pop(self):
-        self.stack.pop()
+        if self.stack:
+            return self.stack.pop()
+        return ("Stack is empty!!!")
 
     def peek(self):
-        return self.stack[len(self.stack) - 1]
+        if self.stack:
+            return self.stack[len(self.stack) - 1]
+        return "Stack is empty!!!"
 
     def change_last_first(self):
         self.stack[0], self.stack[len(self.stack) - 1] = self.stack[len(self.stack) - 1], self.stack[0]
@@ -22,3 +26,5 @@ class Stack:
 
     def check(self, elem):
         return (elem in self.stack)
+
+

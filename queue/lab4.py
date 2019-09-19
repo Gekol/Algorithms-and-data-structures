@@ -6,13 +6,17 @@ class Queue:
         self.queue.append(element)
 
     def dequeue(self):
-        self.queue.pop(0)
+        if self.queue:
+            return self.queue.pop(0)
+        return "Queue is empty!!!"
 
     def change_last_first(self):
         self.queue[0], self.queue[len(self.queue) - 1] = self.queue[len(self.queue) - 1], self.queue[0]
 
     def peek(self):
-        return self.queue[0]
+        if self.queue:
+            return self.queue[0]
+        return "Queue is empty!!!"
 
     def reverse(self):
         self.queue.reverse()
