@@ -1,0 +1,4 @@
+.idea
+venv
+*/_trial_temp
+*/__pycache__
