@@ -1,4 +1,5 @@
-from .lab5_6_7 import get_hash, merge_sort
+from .hash_func import get_hash
+from .merge_sort import merge_sort
 
 class HashTableProbing:
     """Hash-table using probing"""

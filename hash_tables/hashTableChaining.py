@@ -1,4 +1,6 @@
-from .lab5_6_7 import LinkedList, Node, get_hash, merge_sort
+from .hash_func import get_hash
+from .merge_sort import merge_sort
+from .linked_list import LinkedList, Node
 
 class HashTableChaining:
     """Hash-table using chaining"""
@@ -32,7 +34,7 @@ class HashTableChaining:
         """Delete element from table according to the hash-code and the name"""
         hash_code = get_hash(elem[0])
         linked_list = self.array[hash_code]
-        linked_list.delete(elem[1])
+        return linked_list.delete(elem[1])
 
     def search(self, key):
         """Get all the elements with the key got as a parameter."""
@@ -43,7 +45,7 @@ class HashTableChaining:
             if current_elem.value[0] == key:
                 result.append(Node(current_elem.value))
             current_elem = current_elem.next
-        return current_elem
+        return result
 
     def show(self, sort_by=""):
         """Show elements of the table using merge sort"""
