@@ -1,5 +1,5 @@
 from .hash_func import get_hash
-from .merge_sort import merge_sort
+from .merge_sort import sort_func
 from .linked_list import LinkedList, Node
 
 class HashTableChaining:
@@ -12,29 +12,29 @@ class HashTableChaining:
 
     def add(self, item):
         """Add new element or update the number of the element."""
-        hash_code = get_hash(item[0])
+        hash_code = get_hash(item['key'])
         current_elem = self.array[hash_code].head
         key_was = False
         element_was = False
         while current_elem != None:
-            if current_elem.value[0] == item[0]:
+            if current_elem.value[0] == item['key']:
                 key_was = True
-                if current_elem.value[1] == item[1]:
+                if current_elem.value[1] == item['name']:
                     element_was = True
-                    current_elem.value[2] += item[2]
+                    current_elem.value[2] += item['count']
                     break
             current_elem = current_elem.next
         if key_was != True:
             self.codes.append(hash_code)
         if element_was != True:
-            self.array[hash_code].append(Node([item[0], item[1], item[2]]))
+            self.array[hash_code].append(Node([item['key'], item['name'], item['count']]))
         return hash_code
 
     def delete(self, elem):
         """Delete element from table according to the hash-code and the name"""
-        hash_code = get_hash(elem[0])
+        hash_code = get_hash(elem["key"])
         linked_list = self.array[hash_code]
-        return linked_list.delete(elem[1])
+        return linked_list.delete(elem["name"])
 
     def search(self, key):
         """Get all the elements with the key got as a parameter."""
@@ -54,26 +54,6 @@ class HashTableChaining:
             linked_list = self.array[code]
             current_elem = linked_list.head
             while current_elem != None:
-                array_to_show.append((code, current_elem.value))
+                array_to_show.append([code] + current_elem.value)
                 current_elem = current_elem.next
-        if sort_by == "":
-            print("Unsorted table")
-            for i in array_to_show:
-                print(i)
-        elif sort_by == "cypher":
-            print("Sorted table by cypher")
-            array_to_show = merge_sort(array_to_show, 0)
-            for i in array_to_show:
-                print(i)
-        elif sort_by == "name":
-            print("Sorted table by name")
-            array_to_show = merge_sort(array_to_show, 1)
-            for i in array_to_show:
-                print(i)
-        elif sort_by == "count":
-            print("Sorted table by count")
-            array_to_show = merge_sort(array_to_show, 2)
-            for i in array_to_show:
-                print(i)
-        else:
-            print("Wrong data!!!")
+        sort_func(array_to_show, sort_by)

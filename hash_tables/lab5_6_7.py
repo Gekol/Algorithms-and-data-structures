@@ -3,7 +3,7 @@ from hash_tables.hashTableChaining import HashTableChaining
 from hash_tables.hashTableProbing import HashTableProbing
 
 def read_file():
-    with open("data.json", "r") as f:
+    with open("data_new.json", "r") as f:
         data = json.load(f)
     return data
 
@@ -24,7 +24,7 @@ def main():
             cypher = input("Enter the cypher: ")
             name = input("Enter the name: ")
             number = int(input("Enter the number: "))
-            comm = [cypher, name, number]
+            comm = {"key": cypher, "name": name, "count": number}
             table.add(comm)
         elif command == "search":
             cypher = input("Enter the cypher: ")
@@ -32,9 +32,9 @@ def main():
         elif command == "remove":
             cypher = input("Enter the cypher: ")
             name = input("Enter the name: ")
-            print(table.delete([cypher, name]))
+            print(table.delete({"key": cypher, "name": name}))
         elif command == "show":
-            order_by = input("Enter the order key(/cypher/name/count): ")
+            order_by = input("Enter the order key(/code/cypher/name/count): ")
             table.show(order_by)
         elif command == "exit":
             break

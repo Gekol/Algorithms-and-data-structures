@@ -28,10 +28,15 @@ class LinkedList:
             return res
 
         while current_elem.next != None:
+            if current_elem.next == self.tail and self.tail.value[1] == value:
+                res = self.tail
+                self.tail = current_elem
+                current_elem.next = None
+                return res
             if current_elem.next.value[1] == value:
                 res = current_elem.next
                 current_elem.next = current_elem.next.next
-                return current_elem
+                return res
 
     def __str__(self):
         current_elem = self.head
@@ -39,4 +44,6 @@ class LinkedList:
         while current_elem != None:
             result += str(current_elem) + " "
             current_elem = current_elem.next
+        if result == "":
+            result = "There is no elements with such cypher!"
         return result
