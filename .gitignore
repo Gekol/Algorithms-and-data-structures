@@ -2,4 +2,4 @@
 venv
 */_trial_temp
 */__pycache__
-_trial_temp
+_trial_temp*

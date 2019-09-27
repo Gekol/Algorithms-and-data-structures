@@ -1,5 +1,5 @@
 from unittest import TestCase
-from ..radix_sort import work
+from ..counting_sort import work
 from random import randint
 
 class TestCountSort(TestCase):
