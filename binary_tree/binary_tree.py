@@ -190,32 +190,38 @@ class BinaryTree:
 
 def main():
     tree = BinaryTree()
-    tree.insert(Node(10))
-    tree.insert(Node(5))
-    tree.insert(Node(6))
-    tree.insert(Node(3))
-    tree.insert(Node(1))
-    tree.insert(Node(4))
-    tree.insert(Node(5))
-    tree.insert(Node(8))
-    tree.insert(Node(15))
-    tree.insert(Node(14))
-    tree.insert(Node(18))
-    tree.insert(Node(17))
-    tree.insert(Node(20))
-    print(tree)
-    print()
-    print(tree.straight_value_search(8))
-    print(tree.reversed_value_search(5))
-    print(tree.straight_index_search(15))
-    print(tree.reversed_index_search(10))
-    print(tree.remove(5))
-    print()
-    print(tree)
-    print()
-    print(tree.remove(10))
-    print()
-    print(tree)
+    while True:
+        command = input("Enter command(insert/search/remove/exit): ")
+        if command == "insert":
+            value = int(input())
+            tree.insert(Node(value))
+        elif command == "remove":
+            value = int(input())
+            print(tree.remove(value))
+        elif command == "search":
+            search_type = input("Enter search method(straight/reversed): ")
+            if search_type == "straight":
+                search_by = input("Enter search by which we are going to search(value/index): ")
+                if search_by == "value":
+                    value = int(input("Enter the value: "))
+                    print(tree.straight_value_search(value))
+                elif search_by == "index":
+                    index = int(input("Enter the index: "))
+                    print(tree.straight_index_search(value))
+                else:
+                    print("Wrong command!!!")
+            elif search_type == "reversed":
+                search_by = input("Enter search by which we are going to search(value/index): ")
+                if search_by == "value":
+                    value = int(input("Enter the value: "))
+                    print(tree.reversed_value_search(value))
+                elif search_by == "index":
+                    index = int(input("Enter the index: "))
+                    print(tree.reversed_index_search(value))
+                else:
+                    print("Wrong command!!!")
+            else:
+                print("Wrong command!!!")
 
 if __name__ == '__main__':
     main()
