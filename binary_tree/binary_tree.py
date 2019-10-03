@@ -191,13 +191,10 @@ class BinaryTree:
 def main():
     tree = BinaryTree()
     while True:
-        command = input("Enter command(insert/search/remove/exit): ")
+        command = input("Enter command(insert/search/remove/show/exit): ")
         if command == "insert":
             value = int(input())
             tree.insert(Node(value))
-        elif command == "remove":
-            value = int(input())
-            print(tree.remove(value))
         elif command == "search":
             search_type = input("Enter search method(straight/reversed): ")
             if search_type == "straight":
@@ -222,6 +219,11 @@ def main():
                     print("Wrong command!!!")
             else:
                 print("Wrong command!!!")
+        elif command == "remove":
+            value = int(input())
+            print(tree.remove(value))
+        elif command == "show":
+            print(tree)
         elif command == "exit":
             break
         else:
