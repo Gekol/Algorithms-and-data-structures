@@ -222,6 +222,10 @@ def main():
                     print("Wrong command!!!")
             else:
                 print("Wrong command!!!")
+        elif command == "exit":
+            break
+        else:
+            print("Wrong command!!!")
 
 if __name__ == '__main__':
     main()
