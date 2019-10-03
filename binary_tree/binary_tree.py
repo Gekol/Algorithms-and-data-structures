@@ -13,6 +13,7 @@ class BinaryTree:
         self.root = None
 
     def insert(self, new_item):
+        """Insert a new leaf"""
         if self.root == None:
             self.root = new_item
             return
@@ -31,104 +32,86 @@ class BinaryTree:
                     return
                 current_element = current_element.right
 
-    def straight_search(self, value, current_element=None):
-        if current_element == None:
-            current_element = self.root
-        if current_element.value == value:
-            return "Found!!!"
-        if current_element.left:
-            self.straight_search(value, current_element.left)
-        if current_element.right:
-            self.straight_search(value, current_element.right)
-
-    def reversed_search(self, value, current_element=None):
-        if current_element == None:
-            current_element = self.root
-        if current_element.left:
-            self.straight_search(value, current_element.left)
-        if current_element.right:
-            self.straight_search(value, current_element.right)
-        if current_element.value == value:
-            return "Found!!!"
-
-    def remove(self, value):
-        if self.root == None:
-            print("Tree is empty!!!")
-        current_elem = self.root
-        if current_elem.value == value:
-            if current_elem.right == None:
-                self.root = current_elem.left
-                self.root.prev = None
-                return
-            else:
-                left_subtree = self.root.left
-                self.root = current_elem.right
-                self.root.prev = None
-                tree_to_add = self.root.left
-                self.root.left = left_subtree
-                self.insert(tree_to_add)
-                return
-        while current_elem != None and current_elem.value != value:
-            if value > current_elem.value:
-                current_elem = current_elem.right
-            else:
-                current_elem = current_elem.left
-
-        if current_elem.left == current_elem.right == None:
-            if current_elem == current_elem.prev.left:
-                current_elem.prev.left = None
-            else:
-                current_elem.prev.right = None
-        elif current_elem.left == None:
-            if current_elem == current_elem.prev.left:
-                current_elem.prev.right = current_elem.right
-            else:
-                current_elem.prev.right = current_elem.right
-        elif current_elem.right == None:
-            if current_elem == current_elem.prev.right:
-                current_elem.prev.left = current_elem.left
-            else:
-                current_elem.prev.left = current_elem.left
+    def straight_value_search(self, value, current_node=None):
+        """Returns the values of the nodes we need to visit to get to the Node with specified value using straight search"""
+        if current_node == None:
+            current_node = self.root
+        way = [current_node.value]
+        if current_node.value == value:
+            return way
         else:
-            if current_elem == current_elem.prev.right:
-                current_elem.prev.right = current_elem.right
-                tree_to_add = current_elem.left
-                self.insert(tree_to_add)
-            else:
-                current_elem.prev.left = current_elem.left
-                tree_to_add = current_elem.right
-                self.insert(tree_to_add)
+            if current_node.left != None:
+                left_search = self.straight_value_search(value, current_node.left)
+                if left_search and left_search[len(left_search) - 1] == value:
+                    way.extend(left_search)
+                    return way
+            if current_node.right != None:
+                right_search = self.straight_value_search(value, current_node.right)
+                if right_search and right_search[len(right_search) - 1] == value:
+                    way.extend(right_search)
+                    return way
 
-    def breadth_search(self, element):
-        elements = [self.root]
-        while elements:
-            current_elem = elements.pop(0)
-            if current_elem.value == element:
-                return "Found!!!"
-            elements.append(current_elem.left)
-            elements.append(current_elem.right)
+    def reversed_value_search(self, value, current_node=None):
+        """Returns the values of the nodes we need to visit to get to the Node with specified value using reversed search"""
+        if current_node == None:
+            current_node = self.root
+        way = [current_node.value]
+        if current_node.left != None:
+            left_search = self.reversed_value_search(value, current_node.left)
+            if left_search and left_search[len(left_search) - 1] == value:
+                way.extend(left_search)
+                return way
+        if current_node.right != None:
+            right_search = self.straight_value_search(value, current_node.right)
+            if right_search and right_search[len(right_search) - 1] == value:
+                way.extend(right_search)
+                return way
+        if current_node.value == value:
+            return way
 
-    def straight_traverse(self, current_element=None):
-        if current_element == None:
-            current_element = self.root
-        print(current_element.value)
-        if current_element.left:
-            self.straight_traverse(current_element.left)
-        if current_element.right:
-            self.straight_traverse(current_element.right)
+    def straight_index_search(self, index):
+        """Returns the values of the nodes we need to visit to get to the Node with specified index using straight search"""
+        nodes = [(self.root, 1, [self.root.value])]
+        i = 2
+        while nodes:
+            current = nodes.pop(0)
+            if current[1] == index:
+                return current[2]
+            if current[0].left:
+                nodes.append((current[0].left, i, current[2] + [current[0].left.value]))
+                i += 1
+            if current[0].right:
+                nodes.append((current[0].right, i, current[2] + [current[0].right.value]))
+                i += 1
+        return "There is no element with such index!!!"
 
-    def reversed_traverse(self, current_element):
-        if current_element == None:
-            current_element = self.root
-        print(current_element.value)
-        if current_element.left:
-            self.straight_traverse(current_element.left)
-        if current_element.right:
-            self.straight_traverse(current_element.right)
+    def reversed_index_search(self, index):
+        """Returns the values of the nodes we need to visit to get to the Node with specified index using reversed search"""
+        nodes = [(self.root, 1, [self.root.value])]
+        j = 0
+        i = 2
+        while j < len(nodes):
+            current = nodes[j]
+            if current[1] == index:
+                return current[2]
+            if current[0].left:
+                nodes.append((current[0].left, i, current[2] + [current[0].left.value]))
+                i += 1
+            if current[0].right:
+                nodes.append((current[0].right, i, current[2] + [current[0].right.value]))
+                i += 1
+            j += 1
+        while nodes:
+            current = nodes.pop()
+            if current[1] == index:
+                return current[2]
+        return "There is no element with such index!!!"
 
     def __str__(self):
         res = ""
         nodes = [self.root]
+        i = 1
+        j = 0
         while nodes:
             current = nodes.pop(0)
             if current == None:
@@ -137,21 +120,101 @@ class BinaryTree:
                 res += str(current) + " "
                 nodes.append(current.left)
                 nodes.append(current.right)
-
+            j += 1
+            if j == i:
+                res += "\n"
+                j = 0
+                i *= 2
         return res
+
+    def remove(self, value):
+        """Delete Node with the specified value"""
+        current = self.root
+        if current == None:
+            return "Tree is empty!!!"
+        elif current.value == value:
+            if current.right:
+                nodes_to_add = current.right.left
+                left_subtree = current.left
+                new_root = current.right
+                current.right = None
+                new_root.prev = None
+                new_root.left = left_subtree
+                left_subtree.prev = new_root
+                self.root = new_root
+                self.insert(nodes_to_add)
+                return current.value
+            else:
+                new_root = current.left
+                current.left = None
+                new_root.prev = None
+                self.root = new_root
+                return current.value
+        while current and current.value != value:
+            if current.value > value:
+                current = current.left
+            else:
+                current = current.right
+
+        if current == None:
+            return "No such an element!!!"
+
+        if current.right:
+            nodes_to_add = current.right.left
+            left_subtree = current.left
+            new_node = current.right
+            current.right = None
+            new_node.prev = current.prev
+            new_node.left = left_subtree
+            left_subtree.prev = new_node
+            if current == current.prev.left:
+                current.prev.left = new_node
+            else:
+                current.prev.right = new_node
+            self.insert(nodes_to_add)
+            return current.value
+        elif current.left:
+            current.left.prev = current.prev
+            if current == current.prev.left:
+                current.prev.left = current.left
+            else:
+                current.prev.right = current.left
+            return current
+        else:
+            if current == current.prev.left:
+                current.prev.left = None
+            else:
+                current.prev.right = None
+            return current
+
 
 def main():
     tree = BinaryTree()
+    tree.insert(Node(10))
     tree.insert(Node(5))
-    tree.insert(Node(4))
     tree.insert(Node(6))
     tree.insert(Node(3))
-    tree.insert(Node(7))
+    tree.insert(Node(1))
+    tree.insert(Node(4))
     tree.insert(Node(5))
+    tree.insert(Node(8))
+    tree.insert(Node(15))
+    tree.insert(Node(14))
+    tree.insert(Node(18))
+    tree.insert(Node(17))
+    tree.insert(Node(20))
     print(tree)
-    tree.remove(4)
+    print()
+    print(tree.straight_value_search(8))
+    print(tree.reversed_value_search(5))
+    print(tree.straight_index_search(15))
+    print(tree.reversed_index_search(10))
+    print(tree.remove(5))
+    print()
     print(tree)
-    tree.remove(7)
+    print()
+    print(tree.remove(10))
+    print()
     print(tree)
 
 if __name__ == '__main__':
