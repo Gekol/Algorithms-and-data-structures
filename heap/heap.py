@@ -41,7 +41,8 @@ class Heap:
             return "Empty heap!!!"
         self.heap[index], self.heap[len(self.heap) - 1] = self.heap[len(self.heap) - 1], self.heap[index]
         res = self.heap.pop()
-        self.heapify(index)
+        if index < len(self.heap):
+            self.heapify(index)
         return res
 
     def heap_sort(self):
@@ -62,6 +63,9 @@ class Heap:
 
 def main():
     heap = Heap()
+    heap.add(10)
+    heap.add(7)
+    heap.add(5)
     while True:
         command = input(("Enter the command(add/change/delete/extract_max/heap_sort/show/exit): "))
         if command == "add":
@@ -73,9 +77,9 @@ def main():
             heap.change_value(index, new_value)
         elif command == "delete":
             index = int(input("Enter the index: "))
-            heap.delete(index)
+            print(heap.delete(index))
         elif command == "extract_max":
-            heap.delete()
+            print(heap.delete())
         elif command == "heap_sort":
             print(heap.heap_sort())
         elif command == "show":

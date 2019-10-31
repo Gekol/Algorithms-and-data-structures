@@ -33,43 +33,6 @@ class BinaryTree:
                     return
                 current_element = current_element.right
 
-    # def index_insert(self, new_item, index):
-    #     """Insert new item at the place of node with specified index"""
-    #     new_node = Node(new_item)
-    #     if self.root == None:
-    #         self.root = new_node
-    #         return
-    #     if index == 1:
-    #         self.root.prev = new_node
-    #         if self.root.value < new_item:
-    #             new_node.left = self.root
-    #         else:
-    #             new_node.right = self.root
-    #         self.root = new_node
-    #         return
-    #     nodes = [(None, self.root, 1)]
-    #     while nodes:
-    #         current = nodes.pop(0)
-    #         if current[2] == index:
-    #             break
-    #         if current[1] != None:
-    #             nodes.append((current[1], current[1].left, current[2] + 1))
-    #             nodes.append((current[1], current[1].right, current[2] + 2))
-    #     prev_node = current[0]
-    #     current = current[1]
-    #     if new_item < prev_node.value:
-    #         prev_node.left = new_node
-    #     else:
-    #         prev_node.right = new_node
-    #
-    #     if current != None:
-    #         if new_item <= current.value:
-    #             new_node.right = current
-    #         else:
-    #             new_node.left = current
-    #         current.prev = new_node
-    #     new_node.prev = prev_node
-
     def straight_value_search(self, value, current_node=None):
         """Returns the values of the nodes we need to visit to get to the Node with specified value using straight search"""
         if current_node == None:
@@ -145,106 +108,103 @@ class BinaryTree:
                 return current[2]
         return "There is no element with such index!!!"
 
+    def next_value(self, current):
+        if current == None:
+            return None
+
+        if current.right:
+            current = current.right
+            while current.left:
+                current = current.left
+            return current
+        else:
+            while current.prev and current != current.prev.left:
+                current = current.prev
+            if current.prev == None:
+                return None
+            return current
+
+    def prev_value(self, current):
+        if current == None:
+            return None
+
+        if current.left:
+            current = current.left
+            while current.right:
+                current = current.right
+            return current
+        else:
+            while current.prev and current != current.prev.right:
+                current = current.prev
+            if current.prev == None:
+                return None
+            return current
+
     def index_remove(self, index):
         """Remove node with specified index."""
-        current = self.root
-        if current == None:
-            return "Tree is empty!!!"
-        elif index == 1:
-            if current.right:
-                nodes_to_add = current.right.left
-                left_subtree = current.left
-                new_root = current.right
-                current.right = None
-                new_root.prev = None
-                new_root.left = left_subtree
-                if left_subtree:
-                    left_subtree.prev = new_root
-                self.root = new_root
-                self.insert(nodes_to_add)
-                return current.value
-            else:
-                new_root = current.left
-                current.left = None
-                new_root.prev = None
-                self.root = new_root
-                return current.value
-
+        if self.root == None:
+            return "Tree is empty"
         nodes = [(self.root, 1)]
-        i = 2
+        i = 1
         found = False
-        if not nodes:
-            return "Tree is empty!!!"
         while nodes:
             current = nodes.pop(0)
             if current[1] == index:
                 found = True
                 break
-            if current[0].left != None:
-                nodes.append((current[0].left, i))
+            if current[0].right and current[0].left:
+                nodes.append((current[0].left, i + 1))
+                nodes.append((current[0].right, i + 2))
+                i += 2
+            elif current[0].right:
+                nodes.append((current[0].right, i + 1))
                 i += 1
-            if current[0].right != None:
-                nodes.append((current[0].right, i))
+            elif current[0].left:
+                nodes.append((current[0].left, i + 1))
                 i += 1
 
-        if not found:
+        if found == False:
             return "There is no element with such index!!!"
-
         current = current[0]
-
-        if current.right:
-            nodes_to_add = current.right.left
-            left_subtree = current.left
-            new_node = current.right
-            current.right = None
-            new_node.prev = current.prev
-            new_node.left = left_subtree
-            if left_subtree:
-                left_subtree.prev = new_node
-            if current == current.prev.left:
-                current.prev.left = new_node
+        res = current.value
+        next_val = self.next_value(current)
+        if next_val:
+            current.value = next_val.value
+            if next_val.prev == current:
+                current.right = next_val.right
+                if next_val.right:
+                    next_val.right.prev = current
             else:
-                current.prev.right = new_node
-            self.insert(nodes_to_add)
-            return current.value
-        elif current.left:
-            current.left.prev = current.prev
-            if current == current.prev.left:
-                current.prev.left = current.left
-            else:
-                current.prev.right = current.left
-            return current
+                next_val.prev.left = next_val.right
+                if next_val.right != None:
+                    next_val.right.prev = next_val.prev
+            next_val.prev = current.prev
         else:
-            if current == current.prev.left:
-                current.prev.left = None
+            if current.left == current.right == None:
+                if current == current.prev.right:
+                    current.prev.right = None
+                else:
+                    current.prev.left = None
             else:
-                current.prev.right = None
-            return current
+                prev_val = self.prev_value(current)
+                current.value = prev_val.value
+                if prev_val.prev == current:
+                    current.left = prev_val.left
+                    if prev_val.left:
+                        prev_val.left.prev = current
+                else:
+                    prev_val.prev.left = prev_val.left
+                    if prev_val.right != None:
+                        prev_val.right = prev_val.prev
+                prev_val.prev = current.prev
+        return res
+
 
     def remove(self, value):
         """Delete Node with the specified value"""
         current = self.root
         if current == None:
             return "Tree is empty!!!"
-        elif current.value == value:
-            if current.right:
-                nodes_to_add = current.right.left
-                left_subtree = current.left
-                new_root = current.right
-                current.right = None
-                new_root.prev = None
-                new_root.left = left_subtree
-                if left_subtree:
-                    left_subtree.prev = new_root
-                self.root = new_root
-                self.insert(nodes_to_add)
-                return current.value
-            else:
-                new_root = current.left
-                current.left = None
-                new_root.prev = None
-                self.root = new_root
-                return current.value
         while current and current.value != value:
             if current.value > value:
                 current = current.left
@@ -254,34 +214,38 @@ class BinaryTree:
         if current == None:
             return "No such an element!!!"
 
-        if current.right:
-            nodes_to_add = current.right.left
-            left_subtree = current.left
-            new_node = current.right
-            current.right = None
-            new_node.prev = current.prev
-            new_node.left = left_subtree
-            if left_subtree:
-                left_subtree.prev = new_node
-            if current == current.prev.left:
-                current.prev.left = new_node
+        res = current.value
+        next_val = self.next_value(current)
+        if next_val:
+            current.value = next_val.value
+            if next_val.prev == current:
+                current.right = next_val.right
+                if next_val.right:
+                    next_val.right.prev = current
             else:
-                current.prev.right = new_node
-            self.insert(nodes_to_add)
-            return current.value
-        elif current.left:
-            current.left.prev = current.prev
-            if current == current.prev.left:
-                current.prev.left = current.left
-            else:
-                current.prev.right = current.left
-            return current
+                next_val.prev.left = next_val.right
+                if next_val.right != None:
+                    next_val.right.prev = next_val.prev
+            next_val.prev = current.prev
         else:
-            if current == current.prev.left:
-                current.prev.left = None
+            if current.left == current.right == None:
+                if current == current.prev.right:
+                    current.prev.right = None
+                else:
+                    current.prev.left = None
             else:
-                current.prev.right = None
-            return current
+                prev_val = self.prev_value(current)
+                current.value = prev_val.value
+                if prev_val.prev == current:
+                    current.left = prev_val.left
+                    if prev_val.left:
+                        prev_val.left.prev = current
+                else:
+                    prev_val.prev.right = prev_val.left
+                    if prev_val.left != None:
+                        prev_val.left.prev = prev_val.prev
+                prev_val.prev = current.prev
+        return res
 
     def __str__(self):
         res = ""
