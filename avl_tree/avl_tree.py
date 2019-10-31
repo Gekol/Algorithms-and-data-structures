@@ -125,8 +125,8 @@ class AVLTree:
                         grand.right = res
                 print(self)
         elif lt.height - rt.height == -2:
-            print("Simple left turn")
             if rrt.height >= lrt.height:
+                print("Simple left turn")
                 if root == self.root:
                     self.root = self.left_turn(self.root)
                 else:
@@ -135,7 +135,7 @@ class AVLTree:
                     res.prev = grand
                 print(self)
             else:
-                print("Simple left turn")
+                print("Complex left turn")
                 if root == self.root:
                     self.root.right = self.right_turn(root.right)
                     self.root.right.prev = self.root
@@ -371,6 +371,11 @@ class AVLTree:
 
 def main():
     avl_tree = AVLTree()
+    avl_tree.insert(Node(10))
+    avl_tree.insert(Node(15))
+    avl_tree.insert(Node(20))
+    avl_tree.insert(Node(13))
+    avl_tree.insert(Node(11))
     while True:
         command = input(("Enter the command(insert/remove/prefix_traverse/postfix_traverse/infix_traverse/show/exit): "))
         if command == "insert":
