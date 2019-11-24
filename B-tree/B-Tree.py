@@ -87,10 +87,11 @@ class BTree:
                 self.node_insert(median, node.prev)
 
     def delete(self, value):
-        if self.root.values == [value]:
+        if self.root.values == [value] and self.root.children == []:
             self.root = None
             return
         node = self.search(value)
+        value_index = node.values.index(value)
         if len(node.children) == 0:
             if len(node.values) >= self.dimension:
                 node.values.remove(value)
@@ -107,9 +108,11 @@ class BTree:
                     y = parent.values[index - 1]
                 if len(brother.values) >= self.dimension:
                     m = brother.values[0]
-                    node.values.remove(value)
-                    node.values.append(y)
-                    parent.values[index] = m
+                    node.values[value_index] = y
+                    try:
+                        parent.values[index] = m
+                    except:
+                        parent.values[index - 1] = m
                     brother.values.pop(0)
                 else:
                     if node.values[len(node.values) - 1] < brother.values[0]:
@@ -117,12 +120,14 @@ class BTree:
                     else:
                         new_node = Node(brother.values + [y] + node.values)
                     parent.values.remove(y)
+                    if not parent.values and parent == self.root:
+                        self.root = new_node
+                        return
                     node_index = parent.children.index(node)
                     parent.children[node_index] = new_node
                     parent.children.remove(brother)
                     new_node.prev = parent
         else:
-            value_index = node.values.index(value)
             left_child = node.children[value_index]
             right_child = node.children[value_index + 1]
             if len(left_child.values) >= self.dimension:
@@ -141,6 +146,8 @@ class BTree:
         return value
 
     def __str__(self):
+        if not self.root:
+            return ""
         res = ""
         nodes = [self.root]
         level_elements_count = 1
@@ -160,6 +167,30 @@ class BTree:
 def main():
     dimension = int(input("Enter the dimesions count: "))
     btree = BTree(dimension)
+    print(btree)
+    btree.insert(10)
+    btree.insert(20)
+    btree.insert(30)
+    btree.insert(40)
+    btree.insert(50)
+    btree.insert(60)
+    btree.insert(15)
+    btree.insert(16)
+    btree.insert(17)
+    btree.insert(18)
+    print(btree)
+    btree.delete(30)
+    print(btree)
+    btree.delete(20)
+    print(btree)
+    btree.delete(16)
+    print(btree)
+    btree.delete(40)
+    print(btree)
+    btree.delete(50)
+    print(btree)
+    btree.delete(18)
+    print(btree)
     while True:
         command = input("Enter the command(insert/delete/search/show/exit): ")
         if command == "insert":
